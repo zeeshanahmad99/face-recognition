@@ -1,0 +1,18 @@
+.face-recognition {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    background-color: red;
+    width: 500px;
+    margin: 10px auto;
+
+    img {
+        width: 500px;
+    }
+
+    .box-boundary {
+        position: absolute;
+        box-shadow: 0 0 0 3px #149df2 inset;
+        // border: 3px solid #149df2;
+    }
+}

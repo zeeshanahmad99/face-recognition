@@ -1,0 +1,12 @@
+.logo {
+    margin: 0 2rem;
+    
+    .Tilt {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: linear-gradient(to right, lightgreen, lightblue);
+        box-shadow: 0 0 7px 1px black;
+        border-radius: 5px;
+    }
+}
