@@ -23,7 +23,7 @@ class Register extends React.Component {
     const {onRouteChange, onChangeUser} = this.props;
     const {name, email, password} = this.state;
 
-    fetch('http://localhost:3001/register', {
+    fetch('https://secret-dawn-61370.herokuapp.com/register', {
       method: 'Post',
       headers: {
         'Content-Type': 'application/json'

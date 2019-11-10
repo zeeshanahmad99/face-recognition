@@ -23,7 +23,7 @@ class SignIn extends React.Component {
     const {email, password} = this.state;
     const {onChangeUser, onRouteChange} = this.props;
 
-    fetch('http://localhost:3001/signin', {
+    fetch('https://secret-dawn-61370.herokuapp.com/signin', {
       method: 'Post',
       headers: {
         'Content-Type': 'application/json'

@@ -75,7 +75,7 @@ class App extends React.Component {
       )
       .catch(err => console.log(err));
       
-    fetch('http://localhost:3001/image', {
+    fetch('https://secret-dawn-61370.herokuapp.com/image', {
       method: 'Put',
       headers: {
         'Content-Type': 'application/json'
