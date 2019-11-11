@@ -1,6 +1,5 @@
 import React from "react";
 import Particles from "react-particles-js";
-import Clarifai from "clarifai";
 
 import Navigation from "./components/navigation/navigation.component";
 import Logo from "./components/logo/logo.component";
@@ -11,10 +10,6 @@ import SignIn from "./pages/sign-in/sign-in.component";
 import Register from "./pages/register/register.component";
 
 import "./App.css";
-
-const app = new Clarifai.App({
-  apiKey: "341f81adfefe40ee8bdc040709513d15"
-});
 
 const particleOptions = {
   particles: {
@@ -68,12 +63,18 @@ class App extends React.Component {
   };
 
   onButtonSubmit = () => {
-    app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.imageUrl)
-      .then(response =>
-        this.displayFaceBox(this.calculateFaceDetection(response))
-      )
-      .catch(err => console.log(err));
+    const {imageUrl} = this.state;
+
+    fetch('https://secret-dawn-61370.herokuapp.com/clarifai', {
+      method: 'Post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({imageUrl})
+    })
+    .then(res => res.json())
+    .then(data => this.displayFaceBox(this.calculateFaceDetection(data)))
+    .catch(err => console.log(err));
       
     fetch('https://secret-dawn-61370.herokuapp.com/image', {
       method: 'Put',
