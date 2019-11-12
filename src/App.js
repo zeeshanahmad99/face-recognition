@@ -29,7 +29,7 @@ class App extends React.Component {
 
     this.state = {
       imageUrl: "",
-      box: {},
+      boxes: [],
       route: "signin",
       isSignedIn: false,
       user: null
@@ -37,55 +37,58 @@ class App extends React.Component {
   }
 
   onChangeUser = user => {
-    this.setState({user, imageUrl: ''});
-  }
+    this.setState({ user, imageUrl: "" });
+  };
 
   onInputChange = event => {
     this.setState({ imageUrl: event.target.value, box: {} });
   };
 
   calculateFaceDetection = data => {
-    const boxRegions = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById("inputImage");
-    const width = Number(image.width);
-    const height = Number(image.height);
+    return data.outputs[0].data.regions.map(reg => {
+      const boxRegions = reg.region_info.bounding_box;
+      const image = document.getElementById("inputImage");
+      const width = Number(image.width);
+      const height = Number(image.height);
 
-    return {
-      leftCol: boxRegions.left_col * width,
-      topRow: boxRegions.top_row * height,
-      rightCol: width - boxRegions.right_col * width,
-      bottomRow: height - boxRegions.bottom_row * height
-    };
+      return {
+        leftCol: boxRegions.left_col * width,
+        topRow: boxRegions.top_row * height,
+        rightCol: width - boxRegions.right_col * width,
+        bottomRow: height - boxRegions.bottom_row * height,
+        id: reg.id
+      };
+    });
   };
 
-  displayFaceBox = box => {
-    this.setState({ box });
+  displayFaceBox = boxes => {
+    this.setState({ boxes });
   };
 
   onButtonSubmit = () => {
-    const {imageUrl} = this.state;
+    const { imageUrl } = this.state;
 
-    fetch('https://secret-dawn-61370.herokuapp.com/clarifai', {
-      method: 'Post',
+    fetch("https://secret-dawn-61370.herokuapp.com/clarifai", {
+      method: "Post",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({imageUrl})
+      body: JSON.stringify({ imageUrl })
     })
-    .then(res => res.json())
-    .then(data => this.displayFaceBox(this.calculateFaceDetection(data)))
-    .catch(err => console.log(err));
-      
-    fetch('https://secret-dawn-61370.herokuapp.com/image', {
-      method: 'Put',
+      .then(res => res.json())
+      .then(data => this.displayFaceBox(this.calculateFaceDetection(data)))
+      .catch(err => console.log(err));
+
+    fetch("https://secret-dawn-61370.herokuapp.com/image", {
+      method: "Put",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({id: this.state.user.id})
+      body: JSON.stringify({ id: this.state.user.id })
     })
-    .then(res => res.json())
-    .then(user => this.setState({user}))
-    .catch(err => console.log(err));
+      .then(res => res.json())
+      .then(user => this.setState({ user }))
+      .catch(err => console.log(err));
   };
 
   onRouteChange = route => {
@@ -98,7 +101,7 @@ class App extends React.Component {
   };
 
   render() {
-    const { isSignedIn, route, box, imageUrl, user } = this.state;
+    const { isSignedIn, route, boxes, imageUrl, user } = this.state;
 
     return (
       <div className="App">
@@ -108,7 +111,10 @@ class App extends React.Component {
           onRouteChange={this.onRouteChange}
         />
         {route === "signin" ? (
-          <SignIn onChangeUser={this.onChangeUser} onRouteChange={this.onRouteChange} />
+          <SignIn
+            onChangeUser={this.onChangeUser}
+            onRouteChange={this.onRouteChange}
+          />
         ) : route === "home" ? (
           <div>
             <Logo />
@@ -117,10 +123,13 @@ class App extends React.Component {
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
             />
-            <FaceRecognition box={box} imgUrl={imageUrl} />
+            <FaceRecognition boxes={boxes} imgUrl={imageUrl} />
           </div>
         ) : (
-          <Register onChangeUser={this.onChangeUser} onRouteChange={this.onRouteChange} />
+          <Register
+            onChangeUser={this.onChangeUser}
+            onRouteChange={this.onRouteChange}
+          />
         )}
       </div>
     );
